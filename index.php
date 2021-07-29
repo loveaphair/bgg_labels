@@ -128,10 +128,10 @@ foreach($array_data['item'] as $key => $game) {
 		'image' => $game['thumbnail'] ?? ($game['image'] ?? 'https://www.google.com/url?sa=i&url=https%3A%2F%2Fwww.iconsdb.com%2Fgray-icons%2Fquestion-mark-icon.html&psig=AOvVaw0SUeQ3_PwovFTaIq-2tdGi&ust=1627557313533000&source=images&cd=vfe&ved=0CAsQjRxqFwoTCPCajdHRhfICFQAAAAAdAAAAABAD'),
 		'condition' => $condition,
 		'price' => '$'.(trim(str_replace('$', '', ($price ?? 0)))),
-		'rating' => number_format($array_data['item'][0]['stats']['rating']['average']['@attributes']['value'], 1),
-		'min_players' => $array_data['item'][0]['stats']['@attributes']['minplayers'],
-		'max_players' => $array_data['item'][0]['stats']['@attributes']['maxplayers'],
-		'play_time' => $array_data['item'][0]['stats']['@attributes']['playingtime'],
+		'rating' => number_format($game['stats']['rating']['average']['@attributes']['value'], 1),
+		'min_players' => $game['stats']['@attributes']['minplayers'],
+		'max_players' => $game['stats']['@attributes']['maxplayers'],
+		'play_time' => $game['stats']['@attributes']['playingtime'],
 	];
 }
 
@@ -168,7 +168,7 @@ foreach($games as $game) {
 					</div>
 					<div class="col seller-info  <?=$second_col_class?> col-6">
 						<p><b>Year:</b> <?=$game['published']?> <strong>|</strong> <b>BGG Rating:</b> <?=$game['rating']?></p>
-						<p><?=$game['min_players']?> - <?=$game['max_players']?> Players <strong>|</strong> <?=$game['play_time']?> Minutes</p>
+						<p><?=$game['min_players']?> - <?=$game['max_players']?> Players, <?=$game['play_time']?> Minutes</p>
 					</div>
 				</div>
 				<div class="row">
