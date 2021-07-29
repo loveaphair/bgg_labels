@@ -61,9 +61,9 @@ if(empty($_GET['user_name'])) { ?>
 						<label for="user_name">BoardGameGeek Username</label>
 					</div>
 					<div class="form-floating mb-3">
-						<input type="text" name="venmo_link" id="venmo_link" class="form-control" placeholder="https://venmo.com/code?user=12345">
-						<label for="venmo_link">Venmo Address</label>
-						<div id="venmo_help" class="form-text">Example: https://venmo.com/code?user=1aa2b3c4d5 | You can get this link using your venmo app.</div>
+						<input type="text" name="venmo_user" id="venmo_user" class="form-control" placeholder="my-venmo-username-c9965">
+						<label for="venmo_user">Venmo Username</label>
+						<div id="venmo_help" class="form-text">Example: my-venmo-username-c9965</div>
 					</div>
 					<div class="form-floating mb-3">
 						<input type="text" name="seller_name" class="form-control" id="phone_number" placeholder="Your Name">
@@ -86,11 +86,13 @@ if(empty($_GET['user_name'])) { ?>
 
 $username = $_GET['user_name'];
 $qr_code = '';
-if(!empty($_GET['venmo_link'])) {
-	$qr_code = 'https://api.qrserver.com/v1/create-qr-code/?size=150x150&data='.urlencode($_GET['venmo_link']);
+if(!empty($_GET['venmo_user'])) {
+	$string = trim(str_replace('@', '', $_GET['venmo_user']));
+	$venmo_link = 'https://venmo.com/'.$string;
+	$qr_code = 'https://api.qrserver.com/v1/create-qr-code/?size=150x150&data='.urlencode($venmo_link);
 }
 
-$url = "https://boardgamegeek.com/xmlapi2/collection?username={$username}&trade=1";
+$url = "https://boardgamegeek.com/xmlapi2/collection?username={$username}&trade=1&stats=1";
 
 //setting the curl parameters.
 $ch = curl_init();
@@ -110,19 +112,26 @@ if(!is_array($array_data['item'])) {
 	echo '</div></body></html>';
 	return;
 }
-// var_dump($array_data);
+
 $games = [];
 foreach($array_data['item'] as $key => $game) {
 	if(empty($game['status']['@attributes']['fortrade'])) {
 		continue;
 	}
+	$price = trim(preg_replace("/[^0-9]/", "", $game['comment']));
+	$text = trim(preg_replace("/[^a-zA-Z]/", " ", $game['comment']));
+	$condition = !empty($game['conditiontext']) ? $game['conditiontext'].$text : ($text ?: '');
 	$games[] = [
 		'title' => $game['name'] ?? 'Unkown Game',
 		'num_plays' => $game['numplays'],
 		'published' => $game['yearpublished'] ?? 'Unknown',
-		'image' => $game['image'] ?? 'https://www.google.com/url?sa=i&url=https%3A%2F%2Fwww.iconsdb.com%2Fgray-icons%2Fquestion-mark-icon.html&psig=AOvVaw0SUeQ3_PwovFTaIq-2tdGi&ust=1627557313533000&source=images&cd=vfe&ved=0CAsQjRxqFwoTCPCajdHRhfICFQAAAAAdAAAAABAD',
-		'condition' => $game['conditiontext'] ?? '',
-		'price' => '$'.($game['comment'] ?? 0)
+		'image' => $game['thumbnail'] ?? ($game['image'] ?? 'https://www.google.com/url?sa=i&url=https%3A%2F%2Fwww.iconsdb.com%2Fgray-icons%2Fquestion-mark-icon.html&psig=AOvVaw0SUeQ3_PwovFTaIq-2tdGi&ust=1627557313533000&source=images&cd=vfe&ved=0CAsQjRxqFwoTCPCajdHRhfICFQAAAAAdAAAAABAD'),
+		'condition' => $condition,
+		'price' => '$'.(trim(str_replace('$', '', ($price ?? 0)))),
+		'rating' => number_format($array_data['item'][0]['stats']['rating']['average']['@attributes']['value'], 1),
+		'min_players' => $array_data['item'][0]['stats']['@attributes']['minplayers'],
+		'max_players' => $array_data['item'][0]['stats']['@attributes']['maxplayers'],
+		'play_time' => $array_data['item'][0]['stats']['@attributes']['playingtime'],
 	];
 }
 
@@ -146,7 +155,7 @@ foreach($games as $game) {
 			<div class="col border border-dark border-start-0 border-end-0 position-relative">
 				<div class="row justify-content-between mb-1 mt-2">
 					<div class="col col-auto">
-						<h5><?=$game['title']?></h5>
+						<h5 class="d-inline-block text-truncate" style="max-width:300px;"><?=$game['title']?></h5>
 					</div>
 					<div class="col-2 col text-end">
 						<h5><?=$game['price']?></h5>
@@ -158,9 +167,13 @@ foreach($games as $game) {
 						<p><b>Cell Number:</b><?=$_GET['phone_number'] ?? ''?></p>
 					</div>
 					<div class="col seller-info  <?=$second_col_class?> col-6">
-							
-							<p><b>Year Published:</b> <?=$game['published']?></p>
-						<?php if(!empty($game['condition'])) { ?>
+						<p><b>Year:</b> <?=$game['published']?> <strong>|</strong> <b>BGG Rating:</b> <?=$game['rating']?></p>
+						<p><?=$game['min_players']?> - <?=$game['max_players']?> Players <strong>|</strong> <?=$game['play_time']?> Minutes</p>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col col-12">
+					<?php if(!empty($game['condition'])) { ?>
 							<p><b>Condition:</b> <?=$game['condition']?></p>
 						<?php } ?>
 					</div>
