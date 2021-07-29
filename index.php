@@ -7,7 +7,7 @@
 	<style>
 		.collection {
 			page-break-after:always;
-			font-size:80%;
+			font-size:75%;
 		}
 		img {
 			max-width:90px;
@@ -20,7 +20,7 @@
 		}
 		.seller-info p {
 			line-height:12px;
-			margin-bottom:0.5rem;
+			margin-bottom:0.4rem;
 		}
 		.set-min {
 			min-height:130px;
@@ -146,14 +146,14 @@ foreach($games as $game) {
 	if($i === 1) {
 		echo '<div class="collection">';
 	}?>
-		<div class="row mb-2 <?=$row_class?>">
+		<div class="row mb-1 <?=$row_class?>">
 			<div class="img-col col border border-dark position-relative">
 				<div class="position-absolute top-50 start-50 translate-middle h-100">
 					<img src="<?=$game['image'] ?>" class="h-100">
 				</div>
 			</div>
 			<div class="col border border-dark border-start-0 border-end-0 position-relative">
-				<div class="row justify-content-between mb-1 mt-2">
+				<div class="row justify-content-between mt-2">
 					<div class="col col-auto">
 						<h5 class="d-inline-block text-truncate" style="max-width:300px;"><?=$game['title']?></h5>
 					</div>
@@ -187,11 +187,11 @@ foreach($games as $game) {
 		<?php } ?>
 		</div>
 <?php 
-	if($i === 8) {
+	if($i === 7) {
 		echo '</div>';
 	}
 	$i++;
-	if($i > 8) {
+	if($i > 7) {
 		$i = 1;
 	}
 } ?>
