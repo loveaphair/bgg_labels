@@ -211,11 +211,11 @@ foreach($games as $game) {
 			</div>
 		</div>
 <?php 
-	if($i === 7) {
+	if($i === 9) {
 		echo '</div>';
 	}
 	$i++;
-	if($i > 7) {
+	if($i > 9) {
 		$i = 1;
 	}
 } ?>
