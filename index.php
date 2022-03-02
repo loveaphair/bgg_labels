@@ -35,6 +35,10 @@
 			max-width:100% !important;
 			height:auto;
 		}
+		.username {
+			white-space: nowrap;
+			font-size: 1vw;
+		}
 	</style>
 	<script type="text/javascript">
 		$(function() {
@@ -204,7 +208,7 @@ foreach($games as $game) {
 					<?php if(!empty($_GET['venmo_img'])) { ?>
 					<!-- <div class="img-col col border border-dark mx-auto text-center"> -->
 						<img class="venmo-img" src="<?=$_GET['venmo_img']?>" width="100">
-						<span><?=$_GET['venmo_user']?></span>
+						<span class="username"><?=$_GET['venmo_user']?></span>
 					<!-- </div> -->
 					<?php } ?>
 				</div>
