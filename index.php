@@ -177,7 +177,7 @@ foreach($games as $game) {
 	if($i === 1) {
 		echo '<div class="collection row d-flex flex-column justify-content-center align-items-center">';
 	}?>
-		<div class="col-10 m-1" style="border:1px solid black;max-height:120px;">
+		<div class="col-10 m-1" style="border:1px solid black;max-height:130px;">
 			<div class="row">
 				<div class="col-2 d-flex justify-content-center align-items-center position-relative" style="border-right:1px solid black">
 					<img src="<?=$game['image'] ?>" class="position-absolute" style="max-height:100%;max-width:100%;">
@@ -192,10 +192,6 @@ foreach($games as $game) {
 						<div class="col">
 							<h5><?=$game['price']?></h5>
 							<b>Year:</b> <?=$game['published']?> <strong>|</strong> <b>BGG Rating:</b> <?=$game['rating']?>
-							<?php if(!empty($game['condition'])): ?>
-								<br>
-								<b>Condition:</b> <?=$game['condition']?>
-							<?php endif; ?>
 						</div>
 						<div class="col">
 							<b>Seller Name:</b> <?=$_GET['seller_name'] ?? ''?><br>
@@ -203,6 +199,13 @@ foreach($games as $game) {
 							<?=$game['min_players']?> - <?=$game['max_players']?> Players, <?=$game['play_time']?> Minutes
 						</div>
 					</div>
+					<?php if(!empty($game['condition'])): ?>
+					<div class="row">
+						<div class="col">
+							<b>Condition:</b> <?=$game['condition']?>
+						</div>
+					</div>
+					<?php endif; ?>
 				</div>
 				<div class="col-2 d-flex justify-content-center align-items-center flex-column" style="border-left:1px solid black">
 					<?php if(!empty($_GET['venmo_img'])) { ?>
